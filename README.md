@@ -1,6 +1,7 @@
 # deepknowledgetracing
 
 Tensorflow implementation for the [Deep Knowledge Tracing](http://stanford.edu/~cpiech/bio/papers/deepKnowledgeTracing.pdf)
+
 LSTM model is used in the code.
 
 
