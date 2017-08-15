@@ -74,12 +74,12 @@ class StudentModel(object):
         hidden_layers = []
         for i in range(FLAGS.hidden_layer_num):
             final_hidden_size = size/(i+1)
-            hidden1 = tf.nn.rnn_cell.LSTMCell(final_hidden_size, state_is_tuple=True)
+            hidden1 = tf.contrib.rnn.LSTMCell(final_hidden_size, state_is_tuple=True)
             if is_training and config.keep_prob < 1:
-                hidden1 = tf.nn.rnn_cell.DropoutWrapper(hidden1, output_keep_prob=FLAGS.keep_prob)
+                hidden1 = tf.contrib.rnn.DropoutWrapper(hidden1, output_keep_prob=FLAGS.keep_prob)
             hidden_layers.append(hidden1)
 
-        cell = tf.nn.rnn_cell.MultiRNNCell(hidden_layers, state_is_tuple=True)
+        cell = tf.contrib.rnn.MultiRNNCell(hidden_layers, state_is_tuple=True)
 
         input_data = tf.reshape(self._input_data, [-1])
         #one-hot encoding
@@ -177,6 +177,7 @@ def run_epoch(session, m, students, eval_op, verbose=False):
     pred_labels = []
     actual_labels = []
     while(index+m.batch_size < len(students)):
+        # X: (32, 1319)
         x = np.zeros((m.batch_size, m.num_steps))
         target_id = []
         target_correctness = []
@@ -193,6 +194,7 @@ def run_epoch(session, m, students, eval_op, verbose=False):
                 else:
                     label_index = problem_id + m.num_skills
                 x[i, j] = label_index
+                
                 target_id.append(i*m.num_steps*m.num_skills+j*m.num_skills+int(problem_ids[j+1]))
                 target_correctness.append(int(correctness[j+1]))
                 actual_labels.append(int(correctness[j+1]))
@@ -202,8 +204,8 @@ def run_epoch(session, m, students, eval_op, verbose=False):
         pred, _ = session.run([m.pred, eval_op], feed_dict={
             m.input_data: x, m.target_id: target_id,
             m.target_correctness: target_correctness})
-
         for p in pred:
+            print(len(p))
             pred_labels.append(p)
     #print pred_labels
     rmse = sqrt(mean_squared_error(actual_labels, pred_labels))
@@ -275,13 +277,7 @@ def main(unused_args):
     model_name = "DKT"
 
     train_students, train_max_num_problems, train_max_skill_num = read_data_from_csv_file(train_data_path)
-    for item in train_students:
-        print(item)
-    print("====")
-    print(train_max_num_problems)
-    print("====")
-    print(train_max_skill_num)
-    exit(0)
+
 
     config.num_steps = train_max_num_problems
     config.num_skills = train_max_skill_num
