@@ -1,108 +1,249 @@
-import os
-import csv
-import random
+from dkt import model as DKTModel
+import os, sys, time
+import tensorflow as tf
+from sklearn.metrics import roc_curve, auc
+import math
+
+SPLIT_MSG = "***********"
+
+def get_model(Model, num_problem, model_name=None, **network_config):
+    model = Model(
+        num_problems=num_problem,
+        **network_config
+    )
+    return model
 
 
-def padding(student_tuple, target_length):
-    num_problems_answered = student_tuple[0]
-    question_seq = student_tuple[1]
-    question_corr = student_tuple[2]
-    
-    pad_length = target_length - num_problems_answered
-    question_seq += [-1]*pad_length
-    question_corr += [0]*pad_length
-    
-    new_student_tuple = (num_problems_answered, question_seq, question_corr)
-    return new_student_tuple
+class BasicDKT():
+    def __init__(self, sess, data, network_config, **kwargs):
+        self.sess = sess
+        self.data_train = data.train
+        self.data_test = data.test
+        self.num_problems = data.num_problems
+        self.network_config = network_config
+        self.model = get_model(
+            Model=DKTModel.BasicModel,
+            num_problem = data.num_problems,
+            **network_config
+        )
+        self.keep_prob = kwargs.get('keep_prob', 0.5)
+        self.num_epochs = kwargs.get('num_epochs', 500)
+        self.num_runs = kwargs.get('num_runs', 5)
+        self.save_dir = kwargs.get('save_dir', './checkpoint/latest/')
 
-def read_data_from_csv(filename, shuffle=False):
-    rows = []
-    max_num_problems_answered = 0
-    num_problems = 0
-    
-    print("Reading {0}".format(filename))
-    with open(filename, 'r') as f:
-        reader = csv.reader(f, delimiter=',')
-        for row in reader:
-            rows.append(row)
-    print("{0} lines was read".format(len(rows)))
-    
-    # tuples stores the student answering sequence as 
-    # ([num_problems_answered], [problem_ids], [is_corrects])
-    tuples = []
-    for i in range(0, len(rows), 3):
-        # numbers of problem a student answered
-        num_problems_answered = int(rows[i][0])
-        
-        # only keep student with at least 3 records.
-        if num_problems_answered < 3:
-            continue
-        
-        problem_ids = rows[i+1]
-        is_corrects = rows[i+2]
-        
-        invalid_ids_loc = [i for i, pid in enumerate(problem_ids) if pid=='']        
-        for invalid_loc in invalid_ids_loc:
-            del problem_ids[invalid_loc]
-            del is_corrects[invalid_loc]
-        
-        tup =(num_problems_answered, problem_ids, is_corrects)
-        tuples.append(tup)
-        
-        if max_num_problems_answered < num_problems_answered:
-            max_num_problems_answered = num_problems_answered
-        
-        pid = max(int(pid) for pid in problem_ids if pid!='')
-        if num_problems < pid:
-            num_problems = pid
-    # add 1 to num_problems because 0 is in the pid
-    num_problems+=1
+    def train(self):
+        data = self.data_train
+        model = self.model
+        keep_prob = self.keep_prob
+        sess = self.sess
 
-    #shuffle the tuple
-    if shuffle:
-        random.shuffle(tuples)
+        loss = 0
+        y_pred = []
+        y_true = []
+        iteration = 1
+        for batch_idx in range(data.num_batches):
+            X_batch, y_seq_batch, y_corr_batch = data.next_batch()
+            feed_dict = {
+                model.X: X_batch,
+                model.y_seq: y_seq_batch,
+                model.y_corr: y_corr_batch,
+                model.keep_prob: keep_prob,
+            }
+            _optimizer, _target_preds, _target_labels, _loss = sess.run(
+                [model.optimizer, model.target_preds, model.target_labels, model.loss],
+                feed_dict=feed_dict
+            )
+            y_pred += [p for p in _target_preds]
+            y_true += [t for t in _target_labels]
+            loss = (iteration - 1) / iteration * loss + _loss / iteration
+            iteration += 1
+        try:
+            fpr, tpr, thres = roc_curve(y_true, y_pred, pos_label=1)
+            auc_score = auc(fpr, tpr)
+        except ValueError:
+            print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
+            auc_score = 0
+        return auc_score, loss
 
-    print ("max_num_problems_answered:", max_num_problems_answered)
-    print ("num_problems:", num_problems)
-    print("The number of students is {0}".format(len(tuples)))
-    print("Finish reading data.")
-    
-    return tuples, max_num_problems_answered, num_problems
+    def evaluate(self):
+        data = self.data_train
+        model = self.model
+        sess = self.sess
+
+        y_pred = []
+        y_true = []
+        iteration = 1
+        loss = 0
+        for batch_idx in range(data.num_batches):
+            X_batch, y_seq_batch, y_corr_batch = data.next_batch()
+            feed_dict = {
+                model.X: X_batch,
+                model.y_seq: y_seq_batch,
+                model.y_corr: y_corr_batch,
+                model.keep_prob: 1,
+            }
+            _target_preds, _target_labels, _loss = sess.run(
+                [model.target_preds, model.target_labels, model.loss],
+                feed_dict=feed_dict
+            )
+            y_pred += [p for p in _target_preds]
+            y_true += [t for t in _target_labels]
+            loss = (iteration - 1) / iteration * loss + _loss / iteration
+            iteration += 1
+        try:
+            fpr, tpr, thres = roc_curve(y_true, y_pred, pos_label=1)
+            auc_score = auc(fpr, tpr)
+        except ValueError:
+            print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
+            auc_score = 0
+
+        return auc_score, loss
+
+    def run_optimization(self):
+        num_epochs = self.num_epochs
+        num_runs = self.num_runs
+        save_dir = self.save_dir
+        sess = self.sess
+
+        total_auc = 0
+        for run_idx in range(num_runs):
+            sess.run(tf.global_variables_initializer())
+            best_test_auc = 0
+            best_epoch_idx = 0
+            for epoch_idx in range(num_epochs):
+                epoch_start_time = time.time()
+                auc_train, loss_train = self.train()
+                print(
+                    'Epoch {0:>4}, Train AUC: {1:.5}, Train Loss: {2:.5}'.format(epoch_idx + 1, auc_train, loss_train))
+
+                auc_test, loss_test = self.evaluate()
+                test_msg = "Epoch {0:>4}, Test AUC: {1:.5}, Test Loss: {2:.5}".format(epoch_idx + 1, auc_test,
+                                                                                      loss_test)
+                if auc_test > best_test_auc:
+                    test_msg += "*"
+                    best_epoch_idx = epoch_idx
+                    best_test_auc = auc_test
+                    test_msg += ". Saving the model"
+                    self.save_model()
+
+                print(test_msg)
+                epoch_end_time = time.time()
+                print("time used for this epoch: {0}s".format(epoch_end_time - epoch_start_time))
+                print(SPLIT_MSG)
+
+                # quit the training if there is no improve in AUC for 10 epochs.
+                if epoch_idx - best_epoch_idx >= 10:
+                    print("No improvement shown in 10 epochs. Quit Training.")
+                    break
+                sys.stdout.flush()
+                # shuffle the training dataset
+                self.data_train.shuffle()
+            print("The best testing result occured at: {0}-th epoch, with testing AUC: {1:.5}".format(best_epoch_idx,
+                                                                                                      best_test_auc))
+            print(SPLIT_MSG * 3)
+            total_auc += best_test_auc
+        avg_auc = total_auc / num_runs
+        print("average AUC for {0} runs: {1:.5}".format(num_runs, avg_auc))
+
+    def save_model(self):
+        save_dir = self.save_dir
+        sess = self.sess
+        # Define the tf saver
+        saver = tf.train.Saver()
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        save_path = os.path.join(save_dir, 'model')
+        saver.save(sess=sess, save_path=save_path)
+
+    def load_model(self):
+        save_dir = self.save_dir
+        sess = self.sess
+        saver = tf.train.Saver()
+        save_path = os.path.join(save_dir, 'model')
+        if os.path.exists(save_path):
+            saver.restore(sess=sess, save_path=save_path)
+        else:
+            print("No model found at {}".format(save_path))
 
 
-def load_padded_train_data(train_path):
-    students_train, max_num_problems_answered_train, num_problems_train = \
-    read_data_from_csv(train_path)
+class GaussianInputNoiseDKT(BasicDKT):
+    def __init__(self, sess, data, network_config, **kwargs):
+        super().__init__(sess, data, network_config, **kwargs)
+        self.gaussian_std = 1.0/math.sqrt(data.num_problems)
+        self.model = get_model(
+            Model=DKTModel.GaussianNoiseInputModel,
+            num_problem = data.num_problems,
+            **network_config
+        )
 
-    students_train = [padding(student_tuple, max_num_problems_answered_train) 
-                  for student_tuple in students_train]
-    return students_train, max_num_problems_answered_train, num_problems_train
+    def train(self):
+        data = self.data_train
+        model = self.model
+        keep_prob = self.keep_prob
+        gaussian_std = self.gaussian_std
+        sess = self.sess
 
-def load_padded_test_data(test_path):
-    students_test, max_num_problems_answered_test, num_problems_test = \
-    read_data_from_csv(test_path)
+        loss = 0
+        y_pred = []
+        y_true = []
+        iteration = 1
+        for batch_idx in range(data.num_batches):
+            X_batch, y_seq_batch, y_corr_batch = data.next_batch()
+            feed_dict = {
+                model.X: X_batch,
+                model.y_seq: y_seq_batch,
+                model.y_corr: y_corr_batch,
+                model.keep_prob: keep_prob,
+                model.gaussian_std: gaussian_std
+            }
+            _optimizer, _target_preds, _target_labels, _loss = sess.run(
+                [model.optimizer, model.target_preds, model.target_labels, model.loss],
+                feed_dict=feed_dict
+            )
+            y_pred += [p for p in _target_preds]
+            y_true += [t for t in _target_labels]
+            loss = (iteration - 1) / iteration * loss + _loss / iteration
+            iteration += 1
+        try:
+            fpr, tpr, thres = roc_curve(y_true, y_pred, pos_label=1)
+            auc_score = auc(fpr, tpr)
+        except ValueError:
+            print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
+            auc_score = 0
+        return auc_score, loss
 
-    students_test = [padding(student_tuple, max_num_problems_answered_test) 
-                  for student_tuple in students_test]
-    
-    return students_test, max_num_problems_answered_test, num_problems_test
+    def evaluate(self):
+        data = self.data_train
+        model = self.model
+        sess = self.sess
 
-def load_train_test(train_path, test_path):
-    students_train, max_num_steps_train, num_problems_train = \
-    read_data_from_csv(train_path)
+        y_pred = []
+        y_true = []
+        iteration = 1
+        loss = 0
+        for batch_idx in range(data.num_batches):
+            X_batch, y_seq_batch, y_corr_batch = data.next_batch()
+            feed_dict = {
+                model.X: X_batch,
+                model.y_seq: y_seq_batch,
+                model.y_corr: y_corr_batch,
+                model.keep_prob: 1,
+                model.gaussian_std: 0
 
-    students_test, max_num_steps_test, num_problems_test = \
-    read_data_from_csv(test_path)
-    
-    max_num_steps = max(max_num_steps_train, max_num_steps_test)
-    
-    num_problems = max(num_problems_train, num_problems_test)
-    
-    
-    students_train = [padding(student_tuple, max_num_steps) 
-                      for student_tuple in students_train]
+            }
+            _target_preds, _target_labels, _loss = sess.run(
+                [model.target_preds, model.target_labels, model.loss],
+                feed_dict=feed_dict
+            )
+            y_pred += [p for p in _target_preds]
+            y_true += [t for t in _target_labels]
+            loss = (iteration - 1) / iteration * loss + _loss / iteration
+            iteration += 1
+        try:
+            fpr, tpr, thres = roc_curve(y_true, y_pred, pos_label=1)
+            auc_score = auc(fpr, tpr)
+        except ValueError:
+            print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
+            auc_score = 0
 
-    students_test = [padding(student_tuple, max_num_steps) 
-                      for student_tuple in students_test]
-    
-    return students_train, students_test, max_num_steps, num_problems
+        return auc_score, loss
