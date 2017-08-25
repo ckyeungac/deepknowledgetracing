@@ -1,6 +1,6 @@
 from dkt.load_data import ASSISTment2009
 from dkt import model as DKTModel
-from utils import BasicDKT, GaussianInputNoiseDKT
+from dkt.utils import BasicDKT, GaussianInputNoiseDKT
 import os
 import tensorflow as tf
 import time
@@ -44,7 +44,7 @@ def main():
     sess = tf.Session(config=config)
 
     model_name = 'latest'
-    save_dir = './data/' + model_name + '/'
+    save_dir = './checkpoints/' + model_name + '/'
     # initialize model
     dkt = GaussianInputNoiseDKT(sess=sess,
                    data=data,
