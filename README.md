@@ -2,9 +2,9 @@
 Tensorflow implementation for the [Deep Knowledge Tracing](http://stanford.edu/~cpiech/bio/papers/deepKnowledgeTracing.pdf)
 
 To use the original DKT model. You could use the following command:
-'''
+```
 python main.py
-'''
+```
 
 
 # Program usage
