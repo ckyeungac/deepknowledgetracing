@@ -26,7 +26,7 @@ parser.add_argument("--num_epochs", type=int, default=500,
 parser.add_argument("--batch_size", type=int, default=32,
                     help="The mini-batch size used when training the network.")
 # network configuration
-parser.add_argument("-hl", "--hidden_layer_structure", default=[200, ], nargs='*',
+parser.add_argument("-hl", "--hidden_layer_structure", default=[200, ], nargs='*', type=int,
                     help="The hidden layer structure in the RNN. If there is 2 hidden layers with first layer "
                          "of 200 and second layer of 50. Type in '-hl 200 50'")
 parser.add_argument("-gn", "--use_gaussian_noise", default=False, action='store_true',
