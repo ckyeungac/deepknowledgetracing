@@ -59,7 +59,7 @@ test_path = os.path.join(args.data_dir, args.test_file)
 
 network_config = {}
 network_config['batch_size'] = args.batch_size
-network_config['hidden_layer_structure'] = args.hidden_layer_structure
+network_config['hidden_layer_structure'] = list(args.hidden_layer_structure)
 network_config['learning_rate'] = args.learning_rate
 network_config['keep_prob'] = args.keep_prob
 network_config['rnn_cell'] = rnn_cells[args.rnn_cell]
