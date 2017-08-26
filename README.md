@@ -5,6 +5,13 @@ To use the original DKT model. You could use the following command:
 ```
 python main.py
 ```
+The default value are configured to be the original model in DKT.
+
+This project enable the extensability of using the DKT. It provides:
+- Specify the hidden layer structure by using '-hl', e.g. '-hl 200 50' implies using 200 units in the first layer and 50 units in the second layer.
+- Specify whether to use gaussian noise on the input data by flating '-gn'.
+- Specify the RNN Cell that to used in the network by '-cell {LSTM,GRU,BasicRNN,LayerNormBasicLSTM}'
+- Far more, please look into the below section of program usage.
 
 
 # Program usage
