@@ -57,3 +57,12 @@ STRUCTURE ...]]
                         train data file, default as 'skill_id_test.csv'.
 
 ```
+
+# Program Run Time
+The model is trained with GTX1080 with `skill\_id\_train.csv`, and evaluated over `skill\_id\_test.csv`
+---
+| Model | Time used per epoch(approx.) | Average AUC  |
+| --- |---:|---:|
+| G184-50       | 165s | N/A |
+| O200\_with\_layernorm    |  360s  | N/A |
+
