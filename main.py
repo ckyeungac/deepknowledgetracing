@@ -71,6 +71,12 @@ ckpt_save_dir = os.path.join(ckpt_base_dir, model_name)
 num_epochs = args.num_epochs
 num_runs = args.num_runs
 
+def get_DKT():
+    if args.use_gaussian_noise:
+        return GaussianInputNoiseDKT
+    else:
+        return BasicDKT
+
 def main():
     print("Network Configuration:\n", network_config)
     data = ASSISTment2009(train_path, test_path, batch_size=32)
@@ -80,12 +86,13 @@ def main():
     sess = tf.Session(config=config)
 
     # initialize model
-    dkt = GaussianInputNoiseDKT(sess=sess,
-                   data=data,
-                   network_config=network_config,
-                   num_epochs=num_epochs,
-                   num_runs=num_runs,
-                   save_dir=ckpt_save_dir)
+    DKT = get_DKT()
+    dkt = DKT(sess=sess,
+               data=data,
+               network_config=network_config,
+               num_epochs=num_epochs,
+               num_runs=num_runs,
+               save_dir=ckpt_save_dir)
 
     # run optimization of the created model
     dkt.model.build_graph()
