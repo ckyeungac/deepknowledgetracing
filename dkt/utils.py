@@ -50,8 +50,8 @@ class BasicDKT():
                 model.y_corr: y_corr_batch,
                 model.keep_prob: keep_prob,
             }
-            _optimizer, _target_preds, _target_labels, _loss = sess.run(
-                [model.optimizer, model.target_preds, model.target_labels, model.loss],
+            _, _target_preds, _target_labels, _loss = sess.run(
+                [model.train_op, model.target_preds, model.target_labels, model.loss],
                 feed_dict=feed_dict
             )
             y_pred += [p for p in _target_preds]
@@ -252,8 +252,8 @@ class GaussianInputNoiseDKT(BasicDKT):
                 model.keep_prob: keep_prob,
                 model.gaussian_std: gaussian_std
             }
-            _optimizer, _target_preds, _target_labels, _loss = sess.run(
-                [model.optimizer, model.target_preds, model.target_labels, model.loss],
+            _, _target_preds, _target_labels, _loss = sess.run(
+                [model.train_op, model.target_preds, model.target_labels, model.loss],
                 feed_dict=feed_dict
             )
             y_pred += [p for p in _target_preds]

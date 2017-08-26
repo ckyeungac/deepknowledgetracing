@@ -1,5 +1,4 @@
 from dkt.load_data import ASSISTment2009
-from dkt import model as DKTModel
 from dkt.utils import BasicDKT, GaussianInputNoiseDKT
 import os
 import tensorflow as tf
