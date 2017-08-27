@@ -11,7 +11,7 @@ This project enable the extensability of using the DKT. It provides:
 - Specify the hidden layer structure by using `-hl`, e.g. `-hl 200 50` implies using 200 units in the first layer and 50 units in the second layer.
 - Specify whether to use gaussian noise on the input data by flating `-gn`.
 - Specify the RNN Cell that to used in the network by `-cell {LSTM,GRU,BasicRNN,LayerNormBasicLSTM}`
-- Far more, please look into the below section of program usage.
+- For more, please look into the below section of program usage.
 
 
 # Program usage
@@ -64,6 +64,6 @@ The model is trained with GTX1080 with `skill\_id\_train.csv`, and evaluated ove
 
 | Model | Time used per epoch<br/>(approx.) | Average AUC  |
 | --- |---:|---:|
-| G184-50       | 165s | N/A |
+| G184-50       | 165s | 0.82071 |
 | O200\_with\_layernorm    |  360s  | N/A |
 
