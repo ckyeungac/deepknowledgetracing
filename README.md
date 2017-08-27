@@ -64,6 +64,9 @@ The model is trained with GTX1080 with `skill\_id\_train.csv`, and evaluated ove
 
 | Model | Time used per epoch<br/>(approx.) | Average AUC  |
 | --- |---:|---:|
-| G184-50       | 165s | 0.82071 |
+| O200 | 90s | 0.82144 |
+| O184-50| 165s | 0.82071 |
+| G200 | N/A | N/A |
+| G-184-50 | N/A | N/A |
 | O200\_with\_layernorm    |  360s  | N/A |
 
