@@ -1,0 +1,431 @@
+Network Configuration:
+ {'batch_size': 32, 'hidden_layer_structure': [200], 'learning_rate': 0.01, 'keep_prob': 0.5, 'rnn_cell': <class 'tensorflow.python.ops.rnn_cell_impl.LSTMCell'>}
+Reading ./data/skill_id_train.csv
+10119 lines was read
+max_num_problems_answered: 1219
+num_problems: 124
+The number of students is 3137
+Finish reading data.
+Reading ./data/skill_id_test.csv
+2532 lines was read
+max_num_problems_answered: 1114
+num_problems: 124
+The number of students is 784
+Finish reading data.
+Creating placeholder...
+Creating Loss...
+Creating Loss...
+Create optimizer...
+Epoch    1, Train AUC: 0.73114, Train Loss: 0.56815
+Epoch    1, Test AUC: 0.78213, Test Loss: 0.52638*. Saving the model
+time used for this epoch: 94.35554027557373s
+***********
+Epoch    2, Train AUC: 0.79534, Train Loss: 0.51195
+Epoch    2, Test AUC: 0.80156, Test Loss: 0.50322*. Saving the model
+time used for this epoch: 91.5685932636261s
+***********
+Epoch    3, Train AUC: 0.81104, Train Loss: 0.49215
+Epoch    3, Test AUC: 0.80962, Test Loss: 0.48994*. Saving the model
+time used for this epoch: 93.5937864780426s
+***********
+Epoch    4, Train AUC: 0.81962, Train Loss: 0.47971
+Epoch    4, Test AUC: 0.81432, Test Loss: 0.48395*. Saving the model
+time used for this epoch: 94.74250507354736s
+***********
+Epoch    5, Train AUC: 0.82527, Train Loss: 0.47349
+Epoch    5, Test AUC: 0.81832, Test Loss: 0.47757*. Saving the model
+time used for this epoch: 91.5659248828888s
+***********
+Epoch    6, Train AUC: 0.83095, Train Loss: 0.46685
+Epoch    6, Test AUC: 0.82009, Test Loss: 0.47547*. Saving the model
+time used for this epoch: 93.6742639541626s
+***********
+Epoch    7, Train AUC: 0.83385, Train Loss: 0.45865
+Epoch    7, Test AUC: 0.81889, Test Loss: 0.47665
+time used for this epoch: 94.11047172546387s
+***********
+Epoch    8, Train AUC: 0.8375, Train Loss: 0.45507
+Epoch    8, Test AUC: 0.82077, Test Loss: 0.47353*. Saving the model
+time used for this epoch: 93.10320043563843s
+***********
+Epoch    9, Train AUC: 0.84267, Train Loss: 0.44581
+Epoch    9, Test AUC: 0.82087, Test Loss: 0.47539*. Saving the model
+time used for this epoch: 98.14632225036621s
+***********
+Epoch   10, Train AUC: 0.84484, Train Loss: 0.44618
+Epoch   10, Test AUC: 0.81952, Test Loss: 0.47598
+time used for this epoch: 90.0007050037384s
+***********
+Epoch   11, Train AUC: 0.8471, Train Loss: 0.43949
+Epoch   11, Test AUC: 0.8213, Test Loss: 0.47577*. Saving the model
+time used for this epoch: 93.76643824577332s
+***********
+Epoch   12, Train AUC: 0.84956, Train Loss: 0.43814
+Epoch   12, Test AUC: 0.82065, Test Loss: 0.47662
+time used for this epoch: 93.08085823059082s
+***********
+Epoch   13, Train AUC: 0.85338, Train Loss: 0.43308
+Epoch   13, Test AUC: 0.81931, Test Loss: 0.47796
+time used for this epoch: 95.12967586517334s
+***********
+Epoch   14, Train AUC: 0.85553, Train Loss: 0.43322
+Epoch   14, Test AUC: 0.81952, Test Loss: 0.48023
+time used for this epoch: 91.66235113143921s
+***********
+Epoch   15, Train AUC: 0.86032, Train Loss: 0.42407
+Epoch   15, Test AUC: 0.81956, Test Loss: 0.48013
+time used for this epoch: 93.6129789352417s
+***********
+Epoch   16, Train AUC: 0.86168, Train Loss: 0.42258
+Epoch   16, Test AUC: 0.81754, Test Loss: 0.48392
+time used for this epoch: 91.81882905960083s
+***********
+Epoch   17, Train AUC: 0.86603, Train Loss: 0.41521
+Epoch   17, Test AUC: 0.81655, Test Loss: 0.48549
+time used for this epoch: 94.60292744636536s
+***********
+Epoch   18, Train AUC: 0.86965, Train Loss: 0.41291
+Epoch   18, Test AUC: 0.81495, Test Loss: 0.4919
+time used for this epoch: 88.1622474193573s
+***********
+Epoch   19, Train AUC: 0.86756, Train Loss: 0.41475
+Epoch   19, Test AUC: 0.81577, Test Loss: 0.49001
+time used for this epoch: 90.29149866104126s
+***********
+Epoch   20, Train AUC: 0.86999, Train Loss: 0.41372
+Epoch   20, Test AUC: 0.81618, Test Loss: 0.48797
+time used for this epoch: 92.46461820602417s
+***********
+Epoch   21, Train AUC: 0.87494, Train Loss: 0.40776
+Epoch   21, Test AUC: 0.81425, Test Loss: 0.49419
+time used for this epoch: 89.95189642906189s
+***********
+No improvement shown in 10 epochs. Quit Training.
+The best testing result occured at: 10-th epoch, with testing AUC: 0.8213
+*********************************
+Epoch    1, Train AUC: 0.73163, Train Loss: 0.56676
+Epoch    1, Test AUC: 0.7845, Test Loss: 0.52404*. Saving the model
+time used for this epoch: 91.11315107345581s
+***********
+Epoch    2, Train AUC: 0.79769, Train Loss: 0.51047
+Epoch    2, Test AUC: 0.80604, Test Loss: 0.49687*. Saving the model
+time used for this epoch: 90.02882647514343s
+***********
+Epoch    3, Train AUC: 0.81263, Train Loss: 0.49172
+Epoch    3, Test AUC: 0.81252, Test Loss: 0.48574*. Saving the model
+time used for this epoch: 93.19130110740662s
+***********
+Epoch    4, Train AUC: 0.81934, Train Loss: 0.48147
+Epoch    4, Test AUC: 0.8171, Test Loss: 0.47924*. Saving the model
+time used for this epoch: 93.82973003387451s
+***********
+Epoch    5, Train AUC: 0.82525, Train Loss: 0.4663
+Epoch    5, Test AUC: 0.81682, Test Loss: 0.47847
+time used for this epoch: 93.65013432502747s
+***********
+Epoch    6, Train AUC: 0.82917, Train Loss: 0.46596
+Epoch    6, Test AUC: 0.82024, Test Loss: 0.47348*. Saving the model
+time used for this epoch: 93.19391632080078s
+***********
+Epoch    7, Train AUC: 0.83467, Train Loss: 0.45788
+Epoch    7, Test AUC: 0.82044, Test Loss: 0.47274*. Saving the model
+time used for this epoch: 94.96988773345947s
+***********
+Epoch    8, Train AUC: 0.83542, Train Loss: 0.45806
+Epoch    8, Test AUC: 0.82201, Test Loss: 0.47136*. Saving the model
+time used for this epoch: 92.06976532936096s
+***********
+Epoch    9, Train AUC: 0.84124, Train Loss: 0.44799
+Epoch    9, Test AUC: 0.82283, Test Loss: 0.4714*. Saving the model
+time used for this epoch: 95.23634171485901s
+***********
+Epoch   10, Train AUC: 0.8448, Train Loss: 0.44366
+Epoch   10, Test AUC: 0.82204, Test Loss: 0.47156
+time used for this epoch: 94.18951535224915s
+***********
+Epoch   11, Train AUC: 0.84682, Train Loss: 0.44787
+Epoch   11, Test AUC: 0.82173, Test Loss: 0.47329
+time used for this epoch: 93.47340154647827s
+***********
+Epoch   12, Train AUC: 0.85108, Train Loss: 0.43489
+Epoch   12, Test AUC: 0.82031, Test Loss: 0.47475
+time used for this epoch: 95.28152966499329s
+***********
+Epoch   13, Train AUC: 0.8545, Train Loss: 0.43479
+Epoch   13, Test AUC: 0.82015, Test Loss: 0.47687
+time used for this epoch: 95.12230777740479s
+***********
+Epoch   14, Train AUC: 0.85733, Train Loss: 0.43097
+Epoch   14, Test AUC: 0.82018, Test Loss: 0.47768
+time used for this epoch: 93.8886239528656s
+***********
+Epoch   15, Train AUC: 0.86169, Train Loss: 0.42711
+Epoch   15, Test AUC: 0.81911, Test Loss: 0.4786
+time used for this epoch: 99.00632810592651s
+***********
+Epoch   16, Train AUC: 0.8645, Train Loss: 0.42064
+Epoch   16, Test AUC: 0.81856, Test Loss: 0.48258
+time used for this epoch: 91.55922412872314s
+***********
+Epoch   17, Train AUC: 0.86604, Train Loss: 0.42038
+Epoch   17, Test AUC: 0.81698, Test Loss: 0.48354
+time used for this epoch: 90.64996910095215s
+***********
+Epoch   18, Train AUC: 0.86849, Train Loss: 0.41492
+Epoch   18, Test AUC: 0.81634, Test Loss: 0.48473
+time used for this epoch: 93.02772307395935s
+***********
+Epoch   19, Train AUC: 0.87156, Train Loss: 0.40936
+Epoch   19, Test AUC: 0.81526, Test Loss: 0.4884
+time used for this epoch: 93.94846558570862s
+***********
+No improvement shown in 10 epochs. Quit Training.
+The best testing result occured at: 8-th epoch, with testing AUC: 0.82283
+*********************************
+Epoch    1, Train AUC: 0.7289, Train Loss: 0.56813
+Epoch    1, Test AUC: 0.78234, Test Loss: 0.52357*. Saving the model
+time used for this epoch: 94.02034425735474s
+***********
+Epoch    2, Train AUC: 0.7952, Train Loss: 0.50846
+Epoch    2, Test AUC: 0.80392, Test Loss: 0.4996*. Saving the model
+time used for this epoch: 91.86755681037903s
+***********
+Epoch    3, Train AUC: 0.81314, Train Loss: 0.48914
+Epoch    3, Test AUC: 0.81177, Test Loss: 0.48835*. Saving the model
+time used for this epoch: 93.19876337051392s
+***********
+Epoch    4, Train AUC: 0.81873, Train Loss: 0.47798
+Epoch    4, Test AUC: 0.81477, Test Loss: 0.48638*. Saving the model
+time used for this epoch: 92.22689533233643s
+***********
+Epoch    5, Train AUC: 0.82481, Train Loss: 0.47752
+Epoch    5, Test AUC: 0.81863, Test Loss: 0.47764*. Saving the model
+time used for this epoch: 92.46739268302917s
+***********
+Epoch    6, Train AUC: 0.82935, Train Loss: 0.4638
+Epoch    6, Test AUC: 0.81923, Test Loss: 0.4752*. Saving the model
+time used for this epoch: 95.3261444568634s
+***********
+Epoch    7, Train AUC: 0.83346, Train Loss: 0.4582
+Epoch    7, Test AUC: 0.81932, Test Loss: 0.47501*. Saving the model
+time used for this epoch: 92.579904794693s
+***********
+Epoch    8, Train AUC: 0.83635, Train Loss: 0.45289
+Epoch    8, Test AUC: 0.82163, Test Loss: 0.47192*. Saving the model
+time used for this epoch: 96.967689037323s
+***********
+Epoch    9, Train AUC: 0.84042, Train Loss: 0.45157
+Epoch    9, Test AUC: 0.82103, Test Loss: 0.47242
+time used for this epoch: 91.35974884033203s
+***********
+Epoch   10, Train AUC: 0.8438, Train Loss: 0.44657
+Epoch   10, Test AUC: 0.82326, Test Loss: 0.47031*. Saving the model
+time used for this epoch: 92.77866101264954s
+***********
+Epoch   11, Train AUC: 0.84758, Train Loss: 0.44207
+Epoch   11, Test AUC: 0.8217, Test Loss: 0.47384
+time used for this epoch: 92.56976675987244s
+***********
+Epoch   12, Train AUC: 0.85017, Train Loss: 0.43489
+Epoch   12, Test AUC: 0.82099, Test Loss: 0.47625
+time used for this epoch: 92.7635407447815s
+***********
+Epoch   13, Train AUC: 0.85397, Train Loss: 0.43599
+Epoch   13, Test AUC: 0.82094, Test Loss: 0.4747
+time used for this epoch: 93.13028693199158s
+***********
+Epoch   14, Train AUC: 0.85756, Train Loss: 0.42947
+Epoch   14, Test AUC: 0.81777, Test Loss: 0.48027
+time used for this epoch: 95.70388531684875s
+***********
+Epoch   15, Train AUC: 0.86041, Train Loss: 0.42315
+Epoch   15, Test AUC: 0.81677, Test Loss: 0.48383
+time used for this epoch: 94.04175305366516s
+***********
+Epoch   16, Train AUC: 0.86338, Train Loss: 0.42084
+Epoch   16, Test AUC: 0.81707, Test Loss: 0.48474
+time used for this epoch: 94.74979400634766s
+***********
+Epoch   17, Train AUC: 0.8668, Train Loss: 0.41505
+Epoch   17, Test AUC: 0.81587, Test Loss: 0.48642
+time used for this epoch: 89.95930290222168s
+***********
+Epoch   18, Train AUC: 0.86395, Train Loss: 0.41939
+Epoch   18, Test AUC: 0.81519, Test Loss: 0.48463
+time used for this epoch: 93.44881987571716s
+***********
+Epoch   19, Train AUC: 0.87036, Train Loss: 0.41479
+Epoch   19, Test AUC: 0.81388, Test Loss: 0.49022
+time used for this epoch: 96.65803694725037s
+***********
+Epoch   20, Train AUC: 0.87095, Train Loss: 0.40903
+Epoch   20, Test AUC: 0.81359, Test Loss: 0.49274
+time used for this epoch: 91.33434462547302s
+***********
+No improvement shown in 10 epochs. Quit Training.
+The best testing result occured at: 9-th epoch, with testing AUC: 0.82326
+*********************************
+Epoch    1, Train AUC: 0.7343, Train Loss: 0.56207
+Epoch    1, Test AUC: 0.78025, Test Loss: 0.53179*. Saving the model
+time used for this epoch: 91.1403546333313s
+***********
+Epoch    2, Train AUC: 0.80107, Train Loss: 0.5003
+Epoch    2, Test AUC: 0.80354, Test Loss: 0.49849*. Saving the model
+time used for this epoch: 93.29054403305054s
+***********
+Epoch    3, Train AUC: 0.81378, Train Loss: 0.48856
+Epoch    3, Test AUC: 0.81219, Test Loss: 0.48573*. Saving the model
+time used for this epoch: 91.05431509017944s
+***********
+Epoch    4, Train AUC: 0.82252, Train Loss: 0.47324
+Epoch    4, Test AUC: 0.8145, Test Loss: 0.4816*. Saving the model
+time used for this epoch: 96.97455668449402s
+***********
+Epoch    5, Train AUC: 0.82689, Train Loss: 0.46959
+Epoch    5, Test AUC: 0.81722, Test Loss: 0.47712*. Saving the model
+time used for this epoch: 91.51411652565002s
+***********
+Epoch    6, Train AUC: 0.82962, Train Loss: 0.4645
+Epoch    6, Test AUC: 0.81991, Test Loss: 0.47589*. Saving the model
+time used for this epoch: 94.67048501968384s
+***********
+Epoch    7, Train AUC: 0.83407, Train Loss: 0.45555
+Epoch    7, Test AUC: 0.81944, Test Loss: 0.47344
+time used for this epoch: 91.99567699432373s
+***********
+Epoch    8, Train AUC: 0.83689, Train Loss: 0.45707
+Epoch    8, Test AUC: 0.82033, Test Loss: 0.47384*. Saving the model
+time used for this epoch: 93.65857410430908s
+***********
+Epoch    9, Train AUC: 0.84064, Train Loss: 0.45048
+Epoch    9, Test AUC: 0.82087, Test Loss: 0.47346*. Saving the model
+time used for this epoch: 95.56991124153137s
+***********
+Epoch   10, Train AUC: 0.84047, Train Loss: 0.45008
+Epoch   10, Test AUC: 0.82139, Test Loss: 0.47234*. Saving the model
+time used for this epoch: 93.12305212020874s
+***********
+Epoch   11, Train AUC: 0.84531, Train Loss: 0.44287
+Epoch   11, Test AUC: 0.82097, Test Loss: 0.4762
+time used for this epoch: 91.96265411376953s
+***********
+Epoch   12, Train AUC: 0.84873, Train Loss: 0.43808
+Epoch   12, Test AUC: 0.8216, Test Loss: 0.47369*. Saving the model
+time used for this epoch: 95.01140213012695s
+***********
+Epoch   13, Train AUC: 0.85215, Train Loss: 0.43497
+Epoch   13, Test AUC: 0.81952, Test Loss: 0.47805
+time used for this epoch: 93.51623320579529s
+***********
+Epoch   14, Train AUC: 0.85495, Train Loss: 0.43081
+Epoch   14, Test AUC: 0.82056, Test Loss: 0.47641
+time used for this epoch: 94.05639576911926s
+***********
+Epoch   15, Train AUC: 0.85856, Train Loss: 0.42585
+Epoch   15, Test AUC: 0.81852, Test Loss: 0.47921
+time used for this epoch: 93.15719842910767s
+***********
+Epoch   16, Train AUC: 0.86161, Train Loss: 0.42182
+Epoch   16, Test AUC: 0.81795, Test Loss: 0.47999
+time used for this epoch: 93.17144513130188s
+***********
+Epoch   17, Train AUC: 0.86253, Train Loss: 0.42465
+Epoch   17, Test AUC: 0.81716, Test Loss: 0.48053
+time used for this epoch: 96.1875946521759s
+***********
+Epoch   18, Train AUC: 0.86626, Train Loss: 0.42097
+Epoch   18, Test AUC: 0.81532, Test Loss: 0.48759
+time used for this epoch: 92.32795357704163s
+***********
+Epoch   19, Train AUC: 0.86484, Train Loss: 0.41927
+Epoch   19, Test AUC: 0.8169, Test Loss: 0.48461
+time used for this epoch: 91.3588445186615s
+***********
+Epoch   20, Train AUC: 0.86874, Train Loss: 0.41756
+Epoch   20, Test AUC: 0.8153, Test Loss: 0.4877
+time used for this epoch: 96.26721930503845s
+***********
+Epoch   21, Train AUC: 0.87137, Train Loss: 0.40907
+Epoch   21, Test AUC: 0.81425, Test Loss: 0.48943
+time used for this epoch: 94.60795664787292s
+***********
+Epoch   22, Train AUC: 0.87494, Train Loss: 0.40458
+Epoch   22, Test AUC: 0.81504, Test Loss: 0.49185
+time used for this epoch: 94.0755033493042s
+***********
+No improvement shown in 10 epochs. Quit Training.
+The best testing result occured at: 11-th epoch, with testing AUC: 0.8216
+*********************************
+Epoch    1, Train AUC: 0.73544, Train Loss: 0.56164
+Epoch    1, Test AUC: 0.78657, Test Loss: 0.52176*. Saving the model
+time used for this epoch: 94.24606680870056s
+***********
+Epoch    2, Train AUC: 0.79973, Train Loss: 0.51169
+Epoch    2, Test AUC: 0.80642, Test Loss: 0.49583*. Saving the model
+time used for this epoch: 91.83331060409546s
+***********
+Epoch    3, Train AUC: 0.81387, Train Loss: 0.48653
+Epoch    3, Test AUC: 0.81359, Test Loss: 0.48375*. Saving the model
+time used for this epoch: 93.69296765327454s
+***********
+Epoch    4, Train AUC: 0.82243, Train Loss: 0.47138
+Epoch    4, Test AUC: 0.81574, Test Loss: 0.47988*. Saving the model
+time used for this epoch: 91.97968316078186s
+***********
+Epoch    5, Train AUC: 0.82733, Train Loss: 0.47509
+Epoch    5, Test AUC: 0.81981, Test Loss: 0.47404*. Saving the model
+time used for this epoch: 88.83746123313904s
+***********
+Epoch    6, Train AUC: 0.83104, Train Loss: 0.46284
+Epoch    6, Test AUC: 0.82071, Test Loss: 0.47307*. Saving the model
+time used for this epoch: 89.93741464614868s
+***********
+Epoch    7, Train AUC: 0.83472, Train Loss: 0.45743
+Epoch    7, Test AUC: 0.82223, Test Loss: 0.47141*. Saving the model
+time used for this epoch: 93.90892243385315s
+***********
+Epoch    8, Train AUC: 0.83916, Train Loss: 0.45144
+Epoch    8, Test AUC: 0.82098, Test Loss: 0.4726
+time used for this epoch: 90.11646914482117s
+***********
+Epoch    9, Train AUC: 0.84146, Train Loss: 0.44931
+Epoch    9, Test AUC: 0.82074, Test Loss: 0.47357
+time used for this epoch: 90.69368076324463s
+***********
+Epoch   10, Train AUC: 0.84577, Train Loss: 0.44881
+Epoch   10, Test AUC: 0.82044, Test Loss: 0.47361
+time used for this epoch: 89.97730135917664s
+***********
+Epoch   11, Train AUC: 0.84864, Train Loss: 0.44107
+Epoch   11, Test AUC: 0.82148, Test Loss: 0.47444
+time used for this epoch: 90.37601709365845s
+***********
+Epoch   12, Train AUC: 0.8518, Train Loss: 0.43218
+Epoch   12, Test AUC: 0.82057, Test Loss: 0.47595
+time used for this epoch: 89.21666407585144s
+***********
+Epoch   13, Train AUC: 0.85515, Train Loss: 0.43289
+Epoch   13, Test AUC: 0.81922, Test Loss: 0.47786
+time used for this epoch: 93.4625346660614s
+***********
+Epoch   14, Train AUC: 0.85928, Train Loss: 0.42559
+Epoch   14, Test AUC: 0.81775, Test Loss: 0.48044
+time used for this epoch: 93.55561089515686s
+***********
+Epoch   15, Train AUC: 0.86178, Train Loss: 0.42139
+Epoch   15, Test AUC: 0.81803, Test Loss: 0.48151
+time used for this epoch: 91.50094223022461s
+***********
+Epoch   16, Train AUC: 0.86475, Train Loss: 0.41959
+Epoch   16, Test AUC: 0.81633, Test Loss: 0.48633
+time used for this epoch: 90.50033116340637s
+***********
+Epoch   17, Train AUC: 0.86938, Train Loss: 0.41345
+Epoch   17, Test AUC: 0.81456, Test Loss: 0.49182
+time used for this epoch: 93.56032729148865s
+***********
+No improvement shown in 10 epochs. Quit Training.
+The best testing result occured at: 6-th epoch, with testing AUC: 0.82223
+*********************************
+average AUC for 5 runs: 0.82225
+program run for: 9310.367981910706s
