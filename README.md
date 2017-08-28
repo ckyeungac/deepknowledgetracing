@@ -66,7 +66,7 @@ The model is trained with GTX1080 with `skill\_id\_train.csv`, and evaluated ove
 | --- |---:|---:|
 | O200 | 90s | 0.82144 |
 | O184-50| 165s | 0.82071 |
-| **G200 | 92s | 0.82506** |
+| **G200** | **92s** | **0.82506** |
 | G-184-50 | 165s | 0.82308 |
 | O200\_with\_layernorm    |  360s  | 0.81542 |
 
