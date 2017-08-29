@@ -29,6 +29,8 @@ class BasicModel(object):
         self.learning_rate = kwargs.get('learning_rate', 0.01)
         self.max_grad_norm = kwargs.get('max_grad_norm', 20.0)
 
+        print("Basic Model is created.")
+
     def _create_placeholder(self):
         print("Creating placeholder...")
         num_problems = self.num_problems
@@ -39,6 +41,7 @@ class BasicModel(object):
         self.y_corr = tf.placeholder(tf.float32, [None, None, num_problems], name='y_corr')
         self.keep_prob = tf.placeholder(tf.float32)
         self.hidden_layer_input = self.X
+        self.seq_length = length(self.X)
 
     def _influence(self):
         print("Creating Loss...")
@@ -57,7 +60,7 @@ class BasicModel(object):
                     cell,
                     hidden_layer_input,
                     dtype=tf.float32,
-                    sequence_length=length(self.X)
+                    sequence_length=self.seq_length
                 )
             self.hidden_layers_outputs.append(outputs)
             self.hidden_layers_state.append(state)
@@ -118,9 +121,34 @@ class BasicModel(object):
         self._add_summary()
 
 
+class ProblemEmbeddingModel(BasicModel):
+    def __init__(self, num_problems, **kwargs):
+        super(ProblemEmbeddingModel, self).__init__(num_problems, **kwargs)
+        self.embedding_size = kwargs.get('embedding_size', 200)
+        print("ProblemEmbeddingModel is created.")
+
+    def _create_placeholder(self):
+        print("Creating placeholder...")
+        num_problems = self.num_problems
+
+        # placeholder
+        self.X = tf.placeholder(tf.int32, [None, None], name='X')
+        self.y_seq = tf.placeholder(tf.float32, [None, None, num_problems], name='y_seq')
+        self.y_corr = tf.placeholder(tf.float32, [None, None, num_problems], name='y_corr')
+        self.keep_prob = tf.placeholder(tf.float32)
+
+        embeddings = tf.Variable(tf.random_uniform(shape=[self.num_problems*2, self.embedding_size],
+                                                   minval=-1.0, maxval=1.0))
+        X_embedded = tf.nn.embedding_lookup(embeddings, self.X)
+        self.hidden_layer_input = X_embedded
+        self.seq_length = length(X_embedded)
+
+
+
 class GaussianNoiseInputModel(BasicModel):
     def __init__(self, num_problems, **kwargs):
         super(GaussianNoiseInputModel, self).__init__(num_problems, **kwargs)
+        print("GaussianNoiseInputModel is created.")
 
     def gaussian_noise_layer(self, input_layer, std):
         noise = tf.random_normal(shape=tf.shape(input_layer), mean=0.0, stddev=std, dtype=tf.float32)
@@ -131,7 +159,7 @@ class GaussianNoiseInputModel(BasicModel):
         num_problems = self.num_problems
 
         # placeholder
-        self.X = tf.placeholder(tf.float32, [None, None, 2*num_problems], name='X')
+        self.X = tf.placeholder(tf.float32, [None, None, 2 * num_problems], name='X')
         self.y_seq = tf.placeholder(tf.float32, [None, None, num_problems], name='y_seq')
         self.y_corr = tf.placeholder(tf.float32, [None, None, num_problems], name='y_corr')
         self.keep_prob = tf.placeholder(tf.float32)
@@ -139,6 +167,7 @@ class GaussianNoiseInputModel(BasicModel):
 
         X_noised = tf.reshape(self.gaussian_noise_layer(self.X, std=self.gaussian_std), shape=tf.shape(self.X))
         self.hidden_layer_input = X_noised
+        self.seq_length = length(X_noised)
 
 
 

@@ -22,11 +22,7 @@ class BasicDKT():
         self.data_test = data.test
         self.num_problems = data.num_problems
         self.network_config = network_config
-        self.model = get_model(
-            Model=DKTModel.BasicModel,
-            num_problem = data.num_problems,
-            **network_config
-        )
+        self.model = DKTModel.BasicModel(num_problems=data.num_problems, **network_config)
         self.keep_prob = kwargs.get('keep_prob', 0.5)
         self.num_epochs = kwargs.get('num_epochs', 500)
         self.num_runs = kwargs.get('num_runs', 5)
@@ -190,8 +186,7 @@ class BasicDKT():
         )
 
         result = hidden_layers_outputs[layer]
-
-        return result[0]
+        return result
 
     def get_output_layer(self, problem_seqs, correct_seqs):
         model = self.model
@@ -215,11 +210,7 @@ class BasicDKT():
         )
 
         result = pred_seqs
-
-        return result[0]
-
-
-
+        return result
 
 
 class GaussianInputNoiseDKT(BasicDKT):
@@ -303,3 +294,12 @@ class GaussianInputNoiseDKT(BasicDKT):
             auc_score = 0
 
         return auc_score, loss
+
+
+class ProblemEmbeddingDKT(BasicDKT):
+    def __init__(self, sess, data, network_config, **kwargs):
+        super().__init__(sess, data, network_config, **kwargs)
+        self.embedding_size = kwargs.get('embedding_size', 200)
+        self.model = DKTModel.ProblemEmbeddingModel(num_problems=data.num_problems,
+                                                    embedding_size=self.embedding_size,
+                                                    **network_config)

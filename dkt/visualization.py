@@ -41,7 +41,7 @@ def plot_heatmap(data, x_labels, y_labels, second_x_labels=None, fig_size_inches
 
     # Turn off all the ticks
     ax = plt.gca()
-    ax.colorbar()
+    fig.colorbar()
 
-    #     fig.colorbar(heatmap, fraction=0.02, pad=0.04)
+    # fig.colorbar(heatmap, fraction=0.02, pad=0.04)
     plt.show()

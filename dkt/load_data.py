@@ -6,16 +6,18 @@ import random
 def pad(data, target_length, target_value=0):
     return np.pad(data, (0, target_length - len(data)), 'constant', constant_values=target_value)
 
-class OriginalInputProcessor(object):
-    def one_hot(self, indices, depth):
-        encoding = np.concatenate((np.eye(depth), [np.zeros(depth)]))
-        return encoding[indices]
 
+def one_hot(indices, depth):
+    encoding = np.concatenate((np.eye(depth), [np.zeros(depth)]))
+    return encoding[indices]
+
+
+class OriginalInputProcessor(object):
     def process_problems_and_corrects(self, problem_seqs, correct_seqs, num_problems):
         """
         This function aims to process the problem sequence and the correct sequence into a DKT feedable X and y.
-        :param problem_seqs:
-        :param correct_seqs:
+        :param problem_seqs: it is in shape [batch_size, None]
+        :param correct_seqs: it is the same shape as problem_seqs
         :return:
         """
         # pad the sequence with the maximum sequence length
@@ -33,8 +35,8 @@ class OriginalInputProcessor(object):
         correct_seqs_pad = temp
 
         # one hot encode the information
-        problem_seqs_oh = self.one_hot(problem_seqs_pad, depth=num_problems)
-        correct_seqs_oh = self.one_hot(correct_seqs_pad, depth=num_problems)
+        problem_seqs_oh = one_hot(problem_seqs_pad, depth=num_problems)
+        correct_seqs_oh = one_hot(correct_seqs_pad, depth=num_problems)
 
         # slice out the x and y
         x_problem_seqs = problem_seqs_oh[:, :-1]
@@ -46,6 +48,46 @@ class OriginalInputProcessor(object):
 
         result = (X, y_problem_seqs, y_correct_seqs)
         return result
+
+
+class EmbeddingInputProcessor(OriginalInputProcessor):
+    def process_problems_and_corrects(self, problem_seqs, correct_seqs, num_problems):
+        batch_size = len(problem_seqs)
+        max_seq_length = max([len(problem) for problem in problem_seqs])
+        problem_seqs_pad = np.array([pad(problem, max_seq_length, target_value=-1) for problem in problem_seqs])
+        correct_seqs_pad = np.array([pad(correct, max_seq_length, target_value=-1) for correct in correct_seqs])
+
+        # find the correct seqs matrix as the following way:
+        # Let problem_seq = [1,3,2,-1,-1] as a and correct_seq = [1,0,1,-1,-1] as b, which are padded already
+        # First, find the element-wise multiplication of a*b*b = [1,0,2,-1,-1]
+        # Then, for any values 0, assign it to -1 in the vector = [1,-1,2,-1,-1] as c
+        # Such that when we one hot encoding the vector c, it will results a zero vector
+        temp = problem_seqs_pad * correct_seqs_pad * correct_seqs_pad # temp is c in the comment.
+        temp[temp == 0] = -1
+        correct_seqs_pad = temp
+
+        # one hot encode the information for y
+        y_problem_seqs = problem_seqs_pad[:, 1:]
+        y_problem_seqs = one_hot(y_problem_seqs, depth=num_problems)
+        y_correct_seqs = correct_seqs_pad[:, 1:]
+        y_correct_seqs = one_hot(y_correct_seqs, depth=num_problems)
+
+        # keep the index for x,
+        # for example if student answers problem_id 3 correctly, it results 3 + num_problem
+        # if student answers incorrectly, it results 3 only
+
+        X = np.zeros((batch_size, max_seq_length-1), dtype=np.int32)
+        for i in range(batch_size):
+            problem_seq = problem_seqs[i]
+            correct_seq = correct_seqs[i]
+            for j in range(len(problem_seq) - 1):
+                X[i][j] = problem_seq[j] + correct_seq[j] * num_problems
+
+
+        result = (X, y_problem_seqs, y_correct_seqs)
+        return result
+
+
 
 def get_input_processor(InputProcessor):
     """Factory method to return input processor for the dkt model"""
@@ -63,7 +105,7 @@ class BatchGenerator:
         self.num_problems = num_problems
         self.num_samples = len(problem_seqs)
         self.num_batches = len(problem_seqs) // batch_size + 1
-        self.input_processor = kwargs.get('input_processor', get_input_processor(OriginalInputProcessor))
+        self.input_processor = kwargs.get('input_processor', OriginalInputProcessor())
         self._current_batch = None
 
     def next_batch(self):
@@ -71,8 +113,6 @@ class BatchGenerator:
         end_idx = min((self.cursor + 1) * self.batch_size, self.num_samples)
         problem_seqs = self.problem_seqs[start_idx:end_idx]
         correct_seqs = self.correct_seqs[start_idx:end_idx]
-
-        self.input_processor.process_problems_and_corrects(problem_seqs, correct_seqs, self.num_problems)
 
         # x_problem_seqs, x_correct_seqs, y_problem_seqs, y_correct_seqs
         self._current_batch = self.input_processor.process_problems_and_corrects(problem_seqs,
@@ -156,7 +196,7 @@ def read_data_from_csv(filename):
 
 
 class ASSISTment2009:
-    def __init__(self, train_path, test_path, batch_size=32):
+    def __init__(self, train_path, test_path, use_embedding=False, batch_size=32):
         self.students_train, num_problems_train, max_seq_length_train = read_data_from_csv(train_path)
         self.students_test, num_problems_test, max_seq_length_test = read_data_from_csv(test_path)
         self.num_problems = max(num_problems_test, num_problems_train)
@@ -165,7 +205,11 @@ class ASSISTment2009:
         problem_seqs = [student[1] for student in self.students_train]
         correct_seqs = [student[2] for student in self.students_train]
         self.train = BatchGenerator(problem_seqs, correct_seqs, self.num_problems, batch_size)
+        if use_embedding:
+            self.train.input_processor = EmbeddingInputProcessor()
 
         problem_seqs = [student[1] for student in self.students_test]
         correct_seqs = [student[2] for student in self.students_test]
         self.test = BatchGenerator(problem_seqs, correct_seqs, self.num_problems, batch_size)
+        if use_embedding:
+            self.test.input_processor = EmbeddingInputProcessor()

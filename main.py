@@ -1,5 +1,5 @@
 from dkt.load_data import ASSISTment2009
-from dkt.utils import BasicDKT, GaussianInputNoiseDKT
+from dkt.utils import BasicDKT, GaussianInputNoiseDKT, ProblemEmbeddingDKT
 import os
 import tensorflow as tf
 import time
@@ -37,14 +37,21 @@ parser.add_argument("-lr", "--learning_rate", type=float, default=1e-2,
                     help="The learning rate when training the model.")
 parser.add_argument("--keep_prob", type=float, default=0.5,
                     help="Keep probability when training the network.")
+parser.add_argument("--use_embedding", default=False, action='store_true',
+                    help="Use embedding method.")
+parser.add_argument("--embedding_size", default=200, type=int,
+                    help="embedding size of the input layer")
 # data file configuration
 parser.add_argument("--ckpt_dir", type=str, default='./checkpoints/',
                     help="The base directory that the model parameter going to store.")
 parser.add_argument("--model_name", type=str, default='latest',
                     help="The directory that the model parameter going to store.")
-parser.add_argument('--data_dir', type=str, default='./data/')
-parser.add_argument('--train_file', type=str, default='skill_id_train.csv')
-parser.add_argument('--test_file', type=str, default='skill_id_test.csv')
+parser.add_argument('--data_dir', type=str, default='./data/',
+                    help="the data directory, default as './data/")
+parser.add_argument('--train_file', type=str, default='skill_id_train.csv',
+                    help="train data file, default as 'skill_id_train.csv'.")
+parser.add_argument('--test_file', type=str, default='skill_id_test.csv',
+                    help="train data file, default as 'skill_id_test.csv'.")
 args = parser.parse_args()
 
 rnn_cells = {
@@ -68,31 +75,50 @@ ckpt_base_dir = args.ckpt_dir
 model_name = args.model_name
 ckpt_save_dir = os.path.join(ckpt_base_dir, model_name)
 
-num_epochs = args.num_epochs
-num_runs = args.num_runs
-
-def get_DKT():
-    if args.use_gaussian_noise:
-        return GaussianInputNoiseDKT
-    else:
-        return BasicDKT
-
 def main():
-    print("Network Configuration:\n", network_config)
-    data = ASSISTment2009(train_path, test_path, batch_size=32)
+    print("Network Configuration:")
+    for k, v in network_config.items():
+        print(k, v)
 
+    print("\n\ncheck point save directory:", ckpt_save_dir)
+    print("train data path:", train_path)
+    print("test data path:", test_path)
+
+    print("\n\nnum of runs:", args.num_runs)
+    print("num of epochs:", args.num_epochs)
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
 
-    # initialize model
-    DKT = get_DKT()
-    dkt = DKT(sess=sess,
-               data=data,
-               network_config=network_config,
-               num_epochs=num_epochs,
-               num_runs=num_runs,
-               save_dir=ckpt_save_dir)
+    data = None
+    dkt = None
+    if args.use_embedding and args.use_gaussian_noise:
+        raise Exception("use_embedding and use_gaussian_noise cannot be true at the same time.")
+    elif args.use_embedding:
+        data = ASSISTment2009(train_path, test_path, use_embedding=True, batch_size=32)
+        dkt = ProblemEmbeddingDKT(sess=sess,
+                                  data=data,
+                                  network_config=network_config,
+                                  embedding_size=args.embedding_size,
+                                  num_epochs=args.num_epochs,
+                                  num_runs=args.num_runs,
+                                  save_dir=ckpt_save_dir)
+    elif args.use_gaussian_noise:
+        data = ASSISTment2009(train_path, test_path, use_embedding=False, batch_size=32)
+        dkt = GaussianInputNoiseDKT(sess=sess,
+                                  data=data,
+                                  network_config=network_config,
+                                  num_epochs=args.num_epochs,
+                                  num_runs=args.num_runs,
+                                  save_dir=ckpt_save_dir)
+    else:
+        data = ASSISTment2009(train_path, test_path, use_embedding=False, batch_size=32)
+        dkt = BasicDKT(sess=sess,
+                      data=data,
+                      network_config=network_config,
+                      num_epochs=args.num_epochs,
+                      num_runs=args.num_runs,
+                      save_dir=ckpt_save_dir)
 
     # run optimization of the created model
     dkt.model.build_graph()
