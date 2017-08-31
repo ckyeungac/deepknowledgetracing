@@ -59,7 +59,7 @@ class BasicDKT():
             auc_score = auc(fpr, tpr)
         except ValueError:
             print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
-            auc_score = 0
+            auc_score = 0.0
         return auc_score, loss
 
     def evaluate(self):
@@ -92,7 +92,7 @@ class BasicDKT():
             auc_score = auc(fpr, tpr)
         except ValueError:
             print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
-            auc_score = 0
+            auc_score = 0.0
 
         return auc_score, loss
 
@@ -291,7 +291,7 @@ class GaussianInputNoiseDKT(BasicDKT):
             auc_score = auc(fpr, tpr)
         except ValueError:
             print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
-            auc_score = 0
+            auc_score = 0.0
 
         return auc_score, loss
 
