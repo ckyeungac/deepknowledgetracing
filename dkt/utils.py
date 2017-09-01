@@ -60,6 +60,8 @@ class BasicDKT():
         except ValueError:
             print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
             auc_score = 0.0
+            loss = 999999.9
+
         return auc_score, loss
 
     def evaluate(self):
@@ -93,6 +95,7 @@ class BasicDKT():
         except ValueError:
             print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
             auc_score = 0.0
+            loss = 999999.9
 
         return auc_score, loss
 
@@ -257,6 +260,8 @@ class GaussianInputNoiseDKT(BasicDKT):
         except ValueError:
             print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
             auc_score = 0.0
+            loss = 999999.9
+
         return auc_score, loss
 
     def evaluate(self):
@@ -267,7 +272,7 @@ class GaussianInputNoiseDKT(BasicDKT):
         y_pred = []
         y_true = []
         iteration = 1
-        loss = 0
+        loss = 0.0
         for batch_idx in range(data.num_batches):
             X_batch, y_seq_batch, y_corr_batch = data.next_batch()
             feed_dict = {
@@ -275,7 +280,7 @@ class GaussianInputNoiseDKT(BasicDKT):
                 model.y_seq: y_seq_batch,
                 model.y_corr: y_corr_batch,
                 model.keep_prob: 1,
-                model.gaussian_std: 0
+                model.gaussian_std: 0.0
 
             }
             _target_preds, _target_labels, _loss = sess.run(
@@ -292,6 +297,7 @@ class GaussianInputNoiseDKT(BasicDKT):
         except ValueError:
             print("Value Error is encountered during finding the auc_score. Assign the AUC to 0 now.")
             auc_score = 0.0
+            loss = 999999.9
 
         return auc_score, loss
 
